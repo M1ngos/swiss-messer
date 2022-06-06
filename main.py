@@ -1,60 +1,31 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
-import scapy.all as scapy
-import argparse
+import os
 
-def scan(ip):
+def showMenu():  
+ print("""
+1.MAC Changer
+2.Network Manager       
+3.ARP spoofer        
+4.Lazagne      
+5.Exit """)
 
-    # Ask who has the ip
-    arp_request = scapy.ARP(pdst = ip)
+def selection(op):
+    if op == "1":
+      interface = input("Interface to use:")
+      mac = input("Input the new mac:")
+      print("MAC changer")
+      os.system("python3 mac_changer.py -i"+interface+" -m"+mac)
 
-    # Destination mac to the broadcast mac
-    broadcast = scapy.Ether(dst = "ff:ff:ff:ff:ff:ff")
+    elif op == "2": 
+      exit()
 
-    # New packet by appending with foward slash
-    arp_request_broadcast = broadcast/arp_request
+print("----------------------")
+print("Swiss-Messer ver.0.1")
+print("Ctrl+c to Exit!")
+print("----------------------")
 
-    # stand-recive-custom(ether)
-    # send packet and recive response"
-
-    ans_list = scapy.srp(arp_request_broadcast, timeout = 1,verbose = False)[0]
-
-    clients_list = []
-
-    for element in ans_list:
-
-        client_dict = {"ip": element[1].psrc, "mac": element[1].hwsrc}
-
-        clients_list.append(client_dict)
-
-    return clients_list
-
-def print_result(result_list):
-    print(" IP\t\t\tMAC aAddress\n---------------------------------------------")
-    for client in result_list :
-        print(client["ip"]+"\t\t"+client["mac"])
-
-def get_ip_range():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-r","--range", dest="range", help="Specify the ip range for the scan")
-    options = parser.parse_args()
-
-   # if not range.range:
-      #  range.error("[-] Please specify the range,for help use --help")
-
-    return options
-
-options = get_ip_range()
-
-scan_result = scan(options.range)
-
-print_result(scan_result)
-
-
-# arp_request_broadcast.show()
-
-# print(broadcast.summary())
-
-# scapy.ls(scapy.Ether) #info about fields
-
-# print(arp_request.summary())
+while True:
+    showMenu()
+    option = input("Chose an option:")
+    selection(option)
